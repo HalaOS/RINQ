@@ -7,6 +7,7 @@ use std::{
 };
 
 use bigdecimal::BigDecimal;
+use negative_impl::negative_impl;
 use rasi::{
     syscall::{CancelablePoll, Handle},
     utils::cancelable_would_block,
@@ -56,7 +57,7 @@ pub trait Database: Send + Sync {
     fn poll_connect(&self, cx: &mut Context<'_>, handle: &Handle) -> CancelablePoll<Result<()>>;
 
     /// Starts a transaction via one connection. The default isolation level is dependent on the driver.
-    fn begin(&self, conn: &Handle) -> Result<Handle>;
+    fn begin(&self, cx: &mut Context<'_>, conn: &Handle) -> CancelablePoll<Result<Handle>>;
 
     /// Aborts the transaction.
     fn rollback(&self, cx: &mut Context<'_>, tx: &Handle) -> CancelablePoll<Result<()>>;
@@ -137,11 +138,13 @@ impl DbConn {
     }
 
     /// Starts a transaction.
-    pub fn begin(&self) -> Result<Tx> {
-        self.database.begin(&self.conn).map(|tx_handle| Tx {
-            tx_handle,
-            database: self.database.clone(),
-        })
+    pub async fn begin(&self) -> Result<Tx> {
+        cancelable_would_block(|cx| self.database.begin(cx, &self.conn))
+            .await
+            .map(|tx_handle| Tx {
+                tx_handle,
+                database: self.database.clone(),
+            })
     }
 }
 
@@ -209,6 +212,12 @@ pub struct ResultSet {
     result_set_handle: Handle,
     database: Arc<Box<dyn Database>>,
 }
+
+#[negative_impl]
+impl !Send for ResultSet {}
+
+#[negative_impl]
+impl !Sync for ResultSet {}
 
 impl ResultSet {
     /// Returns the column names
@@ -293,6 +302,7 @@ pub async fn open<D: AsRef<str>, S: AsRef<str>>(driver_name: D, source_name: S) 
         ));
     }
 }
+
 /// Register new database driver.
 ///
 /// Cause a panic, if register same driver name twice.

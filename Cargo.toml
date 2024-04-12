@@ -15,5 +15,10 @@ async-trait = "^0.1"
 thiserror = "^1.0"
 bigdecimal = "^0.4"
 dashmap = "5.5.3"
+negative-impl = "0.1.4"
 #RASI
 rasi = "^0.1"
+#database
+sqlite3-sys = "0.16.0"
+#RINQ
+rinq-rdbc = { path = "./crates/rdbc", version = "^0.1" }
