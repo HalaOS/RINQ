@@ -1,0 +1,18 @@
+[package]
+description = "Rust database connectivity interface"
+documentation = "https://docs.rs/rinq-rdbc"
+edition.workspace = true
+license = "MIT"
+name = "rinq-rdbc"
+repository.workspace = true
+version.workspace = true
+readme = "../../README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+rasi = { workspace = true }
+thiserror = { workspace = true }
+bigdecimal = { workspace = true, optional = true }
+
+[features]
+with-decimal = ["bigdecimal"]
