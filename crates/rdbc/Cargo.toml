@@ -13,6 +13,9 @@ readme = "../../README.md"
 rasi = { workspace = true }
 thiserror = { workspace = true }
 bigdecimal = { workspace = true, optional = true }
+dashmap = { workspace = true, optional = true }
 
 [features]
+default = ["with-decimal", "with-register"]
 with-decimal = ["bigdecimal"]
+with-register = ["dashmap"]

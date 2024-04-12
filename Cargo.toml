@@ -14,5 +14,6 @@ clap = "^4.5"
 async-trait = "^0.1"
 thiserror = "^1.0"
 bigdecimal = "^0.4"
+dashmap = "5.5.3"
 #RASI
 rasi = "^0.1"
