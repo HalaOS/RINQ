@@ -6,16 +6,15 @@ license = "MIT"
 name = "rinq-rdbc"
 repository.workspace = true
 version.workspace = true
-readme = "../../README.md"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 rasi = { workspace = true }
 thiserror = { workspace = true }
 bigdecimal = { workspace = true, optional = true }
-dashmap = { workspace = true, optional = true }
 
 [features]
 default = ["with-decimal", "with-register"]
 with-decimal = ["bigdecimal"]
-with-register = ["dashmap"]
+with-register = []
