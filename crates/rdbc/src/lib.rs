@@ -186,6 +186,9 @@ pub struct Stmt {
     database: Arc<Box<dyn Database>>,
 }
 
+#[negative_impl]
+impl !Sync for Stmt {}
+
 impl Stmt {
     /// executes a prepared query statement with the given arguments and returns the query results.
     pub async fn query(&self, values: &[SqlValue<'_>]) -> Result<ResultSet> {
